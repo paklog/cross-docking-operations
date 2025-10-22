@@ -1,23 +1,20 @@
 spring:
   application:
     name: cross-docking-operations
-
+  profiles:
+    active: ${SPRING_PROFILES_ACTIVE:local}
   data:
     mongodb:
-      uri: ${MONGODB_URI:mongodb://localhost:27017/cross_docking_operations}
-
+      uri: ${MONGODB_URI:mongodb://localhost:27017/crossdock}
+      auto-index-creation: true
   kafka:
     bootstrap-servers: ${KAFKA_BOOTSTRAP_SERVERS:localhost:9092}
     producer:
       key-serializer: org.apache.kafka.common.serialization.StringSerializer
       value-serializer: io.cloudevents.kafka.CloudEventSerializer
-    consumer:
-      group-id: cross-docking-operations
-      key-deserializer: org.apache.kafka.common.serialization.StringDeserializer
-      value-deserializer: io.cloudevents.kafka.CloudEventDeserializer
 
 server:
-  port: 8095
+  port: ${SERVER_PORT:8095}
 
 management:
   endpoints:
@@ -29,7 +26,33 @@ management:
       prometheus:
         enabled: true
 
+springdoc:
+  api-docs:
+    path: /v3/api-docs
+  swagger-ui:
+    path: /swagger-ui.html
+
+crossdock:
+  events:
+    topic: crossdock.events
+  optimization:
+    enabled: true
+    algorithm: greedy
+  timing:
+    max-dwell-minutes: 120
+
 logging:
   level:
     root: INFO
-    com.paklog.cross.docking.operations: DEBUG
+    com.paklog.crossdocking: DEBUG
+
+---
+spring:
+  config:
+    activate:
+      on-profile: docker
+  data:
+    mongodb:
+      uri: mongodb://mongodb:27017/crossdock
+  kafka:
+    bootstrap-servers: kafka:9092
