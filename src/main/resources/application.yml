@@ -1,0 +1,35 @@
+spring:
+  application:
+    name: cross-docking-operations
+
+  data:
+    mongodb:
+      uri: ${MONGODB_URI:mongodb://localhost:27017/cross_docking_operations}
+
+  kafka:
+    bootstrap-servers: ${KAFKA_BOOTSTRAP_SERVERS:localhost:9092}
+    producer:
+      key-serializer: org.apache.kafka.common.serialization.StringSerializer
+      value-serializer: io.cloudevents.kafka.CloudEventSerializer
+    consumer:
+      group-id: cross-docking-operations
+      key-deserializer: org.apache.kafka.common.serialization.StringDeserializer
+      value-deserializer: io.cloudevents.kafka.CloudEventDeserializer
+
+server:
+  port: 8095
+
+management:
+  endpoints:
+    web:
+      exposure:
+        include: health,info,metrics,prometheus
+  metrics:
+    export:
+      prometheus:
+        enabled: true
+
+logging:
+  level:
+    root: INFO
+    com.paklog.cross.docking.operations: DEBUG

@@ -1,0 +1,35 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: cross-docking-operations
+  namespace: paklog-core
+spec:
+  replicas: 3
+  selector:
+    matchLabels:
+      app: cross-docking-operations
+  template:
+    metadata:
+      labels:
+        app: cross-docking-operations
+    spec:
+      containers:
+      - name: cross-docking-operations
+        image: paklog/cross-docking-operations:latest
+        ports:
+        - containerPort: 8095
+        env:
+        - name: SPRING_PROFILES_ACTIVE
+          value: "production"
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: cross-docking-operations
+  namespace: paklog-core
+spec:
+  selector:
+    app: cross-docking-operations
+  ports:
+  - port: 8095
+    targetPort: 8095
