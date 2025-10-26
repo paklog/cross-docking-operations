@@ -1,14 +1,9 @@
 package com.paklog.crossdocking.application.command;
 
-import lombok.*;
-import javax.validation.constraints.NotBlank;
+import jakarta.validation.constraints.NotBlank;
 
-@Data
-@Builder
-@NoArgsConstructor
-@AllArgsConstructor
-public class CompleteOperationCommand {
+public record CompleteOperationCommand(
     @NotBlank
-    private String operationId;
-    private Integer itemsProcessed;
-}
+    String operationId,
+    Integer itemsProcessed
+) {}

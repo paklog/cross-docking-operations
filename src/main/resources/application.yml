@@ -34,7 +34,7 @@ springdoc:
 
 crossdock:
   events:
-    topic: crossdock.events
+    topic: transportation-logistics.cross-docking.events
   optimization:
     enabled: true
     algorithm: greedy

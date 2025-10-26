@@ -1,25 +1,29 @@
 package com.paklog.crossdocking.infrastructure.web.controller;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import com.paklog.crossdocking.application.command.*;
 import com.paklog.crossdocking.application.port.in.CrossDockingUseCase;
 import com.paklog.crossdocking.domain.aggregate.CrossDockOperation;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.tags.Tag;
-import lombok.RequiredArgsConstructor;
-import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.*;
 import org.springframework.web.bind.annotation.*;
-import javax.validation.Valid;
+import jakarta.validation.Valid;
 import java.util.List;
 
-@Slf4j
 @RestController
 @RequestMapping("/api/v1/cross-dock")
-@RequiredArgsConstructor
 @Tag(name = "Cross-Docking", description = "Cross-docking operations")
 public class CrossDockController {
+    private static final Logger log = LoggerFactory.getLogger(CrossDockController.class);
+
     
     private final CrossDockingUseCase crossDockingUseCase;
+    public CrossDockController(CrossDockingUseCase crossDockingUseCase) {
+        this.crossDockingUseCase = crossDockingUseCase;
+    }
+
     
     @PostMapping("/transfers")
     @Operation(summary = "Create transfer order")
@@ -33,9 +37,7 @@ public class CrossDockController {
     @Operation(summary = "Initiate direct transfer")
     public ResponseEntity<Void> initiateTransfer(@PathVariable String id) {
         log.info("REST: Initiating transfer: {}", id);
-        InitiateDirectTransferCommand command = InitiateDirectTransferCommand.builder()
-            .transferOrderId(id)
-            .build();
+        InitiateDirectTransferCommand command = new InitiateDirectTransferCommand(id);
         crossDockingUseCase.initiateDirectTransfer(command);
         return ResponseEntity.ok().build();
     }
@@ -52,10 +54,7 @@ public class CrossDockController {
     @Operation(summary = "Complete cross-dock operation")
     public ResponseEntity<Void> completeOperation(@PathVariable String id, @RequestParam Integer itemsProcessed) {
         log.info("REST: Completing operation: {}", id);
-        CompleteOperationCommand command = CompleteOperationCommand.builder()
-            .operationId(id)
-            .itemsProcessed(itemsProcessed)
-            .build();
+        CompleteOperationCommand command = new CompleteOperationCommand(id, itemsProcessed);
         crossDockingUseCase.completeOperation(command);
         return ResponseEntity.ok().build();
     }

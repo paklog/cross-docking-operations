@@ -13,7 +13,6 @@ import java.util.*;
 @Configuration
 public class KafkaConfig {
     
-    @Value("${spring.kafka.bootstrap-servers:localhost:9092}")
     private String bootstrapServers;
     
     @Bean
@@ -29,4 +28,11 @@ public class KafkaConfig {
     public KafkaTemplate<String, CloudEvent> kafkaTemplate() {
         return new KafkaTemplate<>(producerFactory());
     }
+
+
+    // Getters
+    public String getBootstrapServers() { return bootstrapServers; }
+
+    // Setters
+    public void setBootstrapServers(String bootstrapServers) { this.bootstrapServers = bootstrapServers; }
 }

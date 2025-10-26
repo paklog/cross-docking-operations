@@ -1,11 +1,11 @@
 package com.paklog.crossdocking.infrastructure.kafka;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import com.paklog.crossdocking.application.port.out.PublishEventPort;
 import com.paklog.crossdocking.domain.event.DomainEvent;
 import io.cloudevents.CloudEvent;
 import io.cloudevents.core.builder.CloudEventBuilder;
-import lombok.RequiredArgsConstructor;
-import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.kafka.core.KafkaTemplate;
 import org.springframework.stereotype.Component;
@@ -13,16 +13,19 @@ import java.net.URI;
 import java.time.OffsetDateTime;
 import java.util.UUID;
 
-@Slf4j
 @Component
-@RequiredArgsConstructor
 public class EventPublisher implements PublishEventPort {
+    private static final Logger log = LoggerFactory.getLogger(EventPublisher.class);
+
     
     private final KafkaTemplate<String, CloudEvent> kafkaTemplate;
-    
-    @Value("${crossdock.events.topic:crossdock.events}")
+
     private String topic;
-    
+
+    public EventPublisher(KafkaTemplate<String, CloudEvent> kafkaTemplate) {
+        this.kafkaTemplate = kafkaTemplate;
+    }
+
     @Override
     public void publishEvent(DomainEvent event) {
         try {
