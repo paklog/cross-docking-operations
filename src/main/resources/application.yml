@@ -32,6 +32,34 @@ springdoc:
   swagger-ui:
     path: /swagger-ui.html
 
+springwolf:
+  enabled: true
+  docket:
+    info:
+      title: Cross-Docking Operations Event API
+      version: 1.0.0
+      description: |
+        Event-driven API for cross-docking operations.
+        All events follow CloudEvents v1.0 specification and are published to Kafka.
+      contact:
+        name: Paklog Platform Team
+        email: platform@paklog.com
+      license:
+        name: Proprietary
+        url: https://paklog.com/license
+    servers:
+      kafka-dev:
+        protocol: kafka
+        host: ${KAFKA_BOOTSTRAP_SERVERS:localhost:9092}
+  use-fqn: false
+  scanner:
+    async-listener:
+      enabled: true
+  plugin:
+    kafka:
+      publishing:
+        enabled: true
+
 crossdock:
   events:
     topic: transportation-logistics.cross-docking.events
